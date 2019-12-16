@@ -73,42 +73,81 @@ class BinarySearchTree:
     def remove(self, val):
         # p指要删除的节点， pp指该节点的父节点
         p = self. root
-        while p:
+        while p and p.data != val:
+            pp = p
             if p.data > val:
-                pp = p
                 p = p.left
-            elif p.data < val:
-                pp = p
-                p = p.right
             else:
-                break
+                p = p.right
             
         if p == None:
             return False # 没找到要删除的节点
-        
-        # if p == self.root:
 
-        # 要删除的节点是叶子节点或者只要一个节点
-        if p.left == None or p.right == None:            
-            
-            if pp.left == p:
-                pp.left = p.left if p.right == None else p.right
-            else:
-                pp.right = p.left if p.right == None else p.right
-            
-            return True
-            
         #要删除的节点有两个子节点
-        # 1. 找到该节点的右子树的最小节点 2. 用最小节点替代该节点 3. 修改父节点的子节点
-        # m为最小节点， mp为最小节点的父节点
-        m = p.right
-        while m.left:
-            mp = m
-            m = m.left
-        if m == p.right:
-        else:
-        
+        if p.left and p.right:
+            # 1. 找到该节点的右子树的最小节点minP  
+            minP = p.right
+            minPP = p   # minPP为最小节点的父节点
+            while minP.left:
+                minPP = minP
+                minP = minP.left
+            # 2. 用该节点的值为minP的值
+            p.data = minP.data
+            # 3.删除minP(相当于删除叶子节点或只有一个右子节点的节点)
+            p = minP
+            pp = minPP
 
+        # 要删除的节点是叶子节点或者只有一个子节点
+        if p.left:
+            child = p.left
+        elif p.right:
+            child = p.right
+        else:
+            child = None
+            
+        # 考虑要删除根节点
+        if p == self.root:
+            self.root = child
+            return True
+        if p == pp.left:
+            pp.left = child
+        else:
+            pp.right = child
+
+        return True
+
+    def getMaxAndMin(self):
+        p = self.root
+        while p and p.left:
+            p = p.left
+        minV = p.data
+
+        p = self.root
+        while p and p.right:
+            p = p.right
+        maxV = p.data
+        return minV, maxV
+    
+    def getPreAndNext(self, val):
+        # 前驱（父节点）和后继节点（左右节点）
+        p = self.root
+        while p and p.data != val:
+            pp = p
+            if p.data > val:
+                p = p.left
+            else:
+                p = p.right
+            
+        if p == None:
+            return None
+        
+        if p == self.root:
+            pre = None
+        else:
+            pre = pp.data
+       
+        nxt = [p.left.data if p.left else None, p.right.data if p.right else None]
+        return pre, nxt
 
 if __name__ == '__main__':
     # arr = [0, 20, 15, 28, 10, 18, 24, 59, 3, 12, 0, 0, 0, 0, 40]
@@ -123,15 +162,21 @@ if __name__ == '__main__':
     b.insert(25)
     b.insert(4)
     b.insert(16)
-    b.insert(80)
-    b.insert(67)
-    b.insert(95)
-    b.insert(72)
+    b.insert(28)
+    b.insert(30)
+    b.insert(29)
+    b.insert(31)
     b.inOrder(b.root)
+    print()
+    print(b.root.data)
+
 
     b.remove(50)
-    b.inOrder(b.root)    
-
+    b.inOrder(b.root)  
+    print()  
+    print(b.root.data)
+    print(b.getMaxAndMin())
+    print(b.getPreAndNext(25))
 
 
 
