@@ -31,15 +31,20 @@ class Graph(object):
         # 借助队列访问顶点
         queue = [s]
         visited[s] = 1
+
+        # 记录与开始顶点s的好友等级（x表示两顶点间有x-1个顶点及x条边连接）
+        friends = [0] * self.v
         
         while queue:
             w = queue.pop(0)
             for i in self.adj[w]:
                 if not visited[i]:
                     prev[i] = w
+                    friends[i] = friends[w] + 1
                     if i == t:
                         # self.showPath(s, t, prev)
                         self.showPathRecur(s, t, prev)
+                        self.show3LevelFriends(s, friends)
                         return
                     visited[i] = 1
                     queue.append(i)
@@ -87,6 +92,13 @@ class Graph(object):
             self.showPathRecur(s, prev[t], prev)
         print(t, end=" ")
 
+    def show3LevelFriends(self, s,friends):
+        print()
+        print(s, end="的3度好友有:")
+        for i in range(len(friends)):
+            if friends[i] == 3:
+                print(i, end=" ")
+        print()
 
 if __name__ == '__main__':
     g = Graph(8)
@@ -100,6 +112,7 @@ if __name__ == '__main__':
     g.addEdge(4, 6)
     g.addEdge(5, 7)
     g.addEdge(6, 7)
-    g.bfs(0,7)
-    g.dfs(0, 5)
+
     # 寻找3度好友（两顶点间有三条边传递）
+    # g.bfs(0,7)
+    g.dfs(0, 5)
